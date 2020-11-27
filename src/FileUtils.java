@@ -17,7 +17,6 @@ public class FileUtils {
 
 
     public static String fileReader(File file) {
-        //TODO: Phase1: read content from file
         StringBuilder stringBuilder = new StringBuilder();
         try (FileInputStream inputStream = new FileInputStream(file)) {
             int c;
@@ -30,7 +29,6 @@ public class FileUtils {
     }
 
     public static void fileWriter(String content) {
-        //TODO: write content on file
         String fileName = getProperFileName(content);
         System.out.println(content);
         try (FileOutputStream outputStream = new FileOutputStream(".\\notes\\" + fileName)) {
@@ -44,11 +42,6 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
-
-    //TODO: Phase1: define method here for reading file with InputStream
-    //TODO: Phase1: define method here for writing file with OutputStream
-
-    //TODO: Phase2: proper methods for handling serialization
 
     private static String getProperFileName(String content) {
         int loc = content.indexOf("\n");
