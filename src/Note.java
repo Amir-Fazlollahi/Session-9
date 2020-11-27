@@ -1,4 +1,6 @@
-public class Note {
+import java.io.Serializable;
+
+public class Note implements Serializable {
 
     private String title;
     private String content;
@@ -10,13 +12,23 @@ public class Note {
         this.date = date;
     }
 
+    /**
+     * @return this object's content
+     */
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * @return this object's date
+     */
+    public String getDate() {
+        return date;
+    }
+
     @Override
     public String toString() {
-        return "Note{" +
-                "title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", date='" + date + '\'' +
-                '}';
+        return title + ", " + date;
     }
 
 }

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.time.LocalDate;
 
 public class FileUtils {
 
@@ -18,37 +19,35 @@ public class FileUtils {
 
     public static String fileReader(File file) {
         StringBuilder stringBuilder = new StringBuilder();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            char[] chars = new char[8192];
-            int count;
-            while (bufferedReader.ready()) {
-                count = bufferedReader.read(chars);
-                stringBuilder.append(new String(chars, 0, count));
-            }
-        } catch (IOException e) {
+        try (ObjectInputStream objectReader = new ObjectInputStream(new FileInputStream(file))) {
+            Note existingNote = (Note) objectReader.readObject();
+            stringBuilder.append(existingNote.getContent());
+            stringBuilder.append("\n").append(existingNote.getDate());
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return stringBuilder.toString();
     }
 
     public static void fileWriter(String content) {
-        String fileName = getProperFileName(content);
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(".\\notes\\" + fileName))) {
-            bufferedWriter.write(content);
-            bufferedWriter.flush();
+        String fileTitle = getProperFileName(content);
+        Note newNote = new Note(fileTitle, content, LocalDate.now().toString());
+        String fileName = newNote.toString() + ".txt";
+        try (ObjectOutputStream objectWriter = new ObjectOutputStream(new FileOutputStream(".\\notes\\" + fileName))) {
+            objectWriter.writeObject(newNote);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private static String getProperFileName(String content) {
-        int loc = content.indexOf("\n");
+        int loc = content.indexOf(" ");
         if (loc != -1) {
-            return content.substring(0, loc) + ".txt";
+            return content.substring(0, loc) + "...";
         }
         if (!content.isEmpty()) {
-            return content + ".txt";
+            return content + "...";
         }
-        return System.currentTimeMillis() + "_new file.txt";
+        return System.currentTimeMillis() + "_new file";
     }
 }
