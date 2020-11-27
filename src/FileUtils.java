@@ -18,10 +18,13 @@ public class FileUtils {
 
     public static String fileReader(File file) {
         StringBuilder stringBuilder = new StringBuilder();
-        try (FileInputStream inputStream = new FileInputStream(file)) {
-            int c;
-            while ((c = inputStream.read()) != -1)
-                stringBuilder.append((char) c);
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            char[] chars = new char[8192];
+            int count;
+            while (bufferedReader.ready()) {
+                count = bufferedReader.read(chars);
+                stringBuilder.append(new String(chars, 0, count));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,14 +33,9 @@ public class FileUtils {
 
     public static void fileWriter(String content) {
         String fileName = getProperFileName(content);
-        System.out.println(content);
-        try (FileOutputStream outputStream = new FileOutputStream(".\\notes\\" + fileName)) {
-            char[] chars = new char[content.length()];
-            content.getChars(0, content.length(), chars, 0);
-            for (char c:
-                 chars) {
-                outputStream.write(c);
-            }
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(".\\notes\\" + fileName))) {
+            bufferedWriter.write(content);
+            bufferedWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
